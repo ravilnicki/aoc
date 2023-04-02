@@ -1,35 +1,30 @@
 package main
 
 import (
-	"bufio"
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
 
-func main() {
-	reader := bufio.NewReader(os.Stdin)
-	secret, _ := reader.ReadBytes('\n')
-	var p1, p2, i int64 = 0, 0, 1
-	for ; i < 10000000; i++ {
+func MineAdventCoin(secret []byte, num_zeros int, start int64) int64 {
+	i := start
+	for {
 		hash := md5.Sum(strconv.AppendInt(secret, i, 10))
-		if p1 == 0 {
-			if strings.HasPrefix(hex.EncodeToString(hash[:]), "00000") {
-				p1 = i
-			}
+		encoded := hex.EncodeToString(hash[:])
+		if strings.HasPrefix(encoded, strings.Repeat("0", num_zeros)) {
+			return i
 		}
-		if p2 == 0 {
-			if strings.HasPrefix(hex.EncodeToString(hash[:]), "000000") {
-				p2 = i
-			}
-		}
-		if p1 != 0 && p2 != 0 {
-			break
-		}
+		i++
 	}
+}
+
+func main() {
+	var secret []byte
+	fmt.Scanln(&secret)
+	p1 := MineAdventCoin(secret, 5, 1)
+	p2 := MineAdventCoin(secret, 6, p1)
 	fmt.Println("Part One:", p1)
 	fmt.Println("Part Two:", p2)
 }
