@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func nextPos(pos *[2]int, move rune) {
+func nextPos(pos []int, move rune) {
 	switch move {
 	case '^':
 		pos[1]++
@@ -26,16 +26,15 @@ func main() {
 	year1[santa1Pos] = true
 	year2[santa2Pos] = true
 	for i, move := range line {
-		nextPos(&santa1Pos, move)
+		nextPos(santa1Pos[:], move)
 		year1[santa1Pos] = true
-		var pos *[2]int
 		if i%2 == 0 {
-			pos = &santa2Pos
+			nextPos(santa2Pos[:], move)
+			year2[santa2Pos] = true
 		} else {
-			pos = &roboSantaPos
+			nextPos(roboSantaPos[:], move)
+			year2[roboSantaPos] = true
 		}
-		nextPos(pos, move)
-		year2[*pos] = true
 	}
 	fmt.Println("Part One:", len(year1))
 	fmt.Println("Part Two:", len(year2))
